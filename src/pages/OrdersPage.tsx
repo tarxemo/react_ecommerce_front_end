@@ -237,7 +237,7 @@ const OrdersPage = () => {
                             <div className="w-20 h-20 bg-gray-700 rounded-lg mr-4 overflow-hidden">
                               {item.product.image && (
                                 <img 
-                                  src={`http://127.0.0.1:8000/media/${item.product.image}`} 
+                                  src={`https://tar.pythonanywhere.com/media/${item.product.image}`} 
                                   alt={item.product.name}
                                   className="w-full h-full object-cover"
                                 />
