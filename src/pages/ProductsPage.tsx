@@ -105,7 +105,7 @@ const ProductsPage = () => {
             className="bg-gray-800 p-4 rounded-lg shadow-lg hover:scale-105 transition-transform"
           >
             <img
-              src={`http://127.0.0.1:8000/media/${product.image}`}
+              src={`https://tar.pythonanywhere.com/media/${product.image}`}
               className="w-full h-48 object-cover rounded-lg mb-4"
             />
             <h2 className="text-xl font-semibold mb-2 text-[#FFE31A]">{product.name}</h2>

@@ -261,7 +261,7 @@ const ProductDetailsPage = () => {
           {/* Product Image */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <img
-              src={`http://127.0.0.1:8000/media/${product.image}`}
+              src={`https://tar.pythonanywhere.com/media/${product.image}`}
               alt={product.name}
               className="w-full h-96 object-cover rounded-lg"
             />
