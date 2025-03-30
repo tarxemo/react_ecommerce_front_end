@@ -24,16 +24,27 @@ const CreateProductPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Fetch categories using GraphQL
-  const { data: categoriesData, loading: categoriesLoading, error: categoriesError } = useQuery(GET_ALL_CATEGORIES);
+  const { data: categoriesData, loading: categoriesLoading } = useQuery(GET_ALL_CATEGORIES);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, type, checked, value } = e.target;
-    
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+    const { name, type, value } = e.target;
+  
+    // Type narrowing: Ensure we're working with an HTMLInputElement
+    if (type === 'checkbox' || type === 'radio') {
+      // We are now confident that checked exists on e.target
+      setFormData({
+        ...formData, // Use checked for checkbox or radio button
+      });
+    } else {
+      // For other types like text or select, use value
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
+  
+  
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -175,7 +186,7 @@ const CreateProductPage = () => {
                 required
               >
                 <option value="">Select Category</option>
-                {categoriesData?.categories.map((category) => (
+                {categoriesData?.categories.map((category: any) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
                   </option>

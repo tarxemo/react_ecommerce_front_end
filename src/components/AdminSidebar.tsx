@@ -7,7 +7,7 @@ interface SidebarProps {
   toggleSidebar: () => void;
 }
 
-const AdminSidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
+const AdminSidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   return (
     <div
       className={`fixed inset-y-0 left-0 bg-gray-900 text-white w-64 transform ${

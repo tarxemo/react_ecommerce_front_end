@@ -424,8 +424,8 @@ export const GET_ORDER_BY_ID = gql`
 `;
 
 export const GET_ORDERS_BY_USER = gql`
-  query GetOrdersByUser($userId: ID!) {
-    ordersByUser(userId: $userId) {
+  query GetOrdersByUser {
+    ordersByUser {
       id
       user {
         id

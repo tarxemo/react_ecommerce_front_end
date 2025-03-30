@@ -43,8 +43,8 @@ export const LOGOUT_USER = gql`
 
 // User Mutations
 export const CREATE_USER = gql`
-  mutation CreateUser($userData: UserInput!) {
-    createCustomUser(userData: $userData) {
+  mutation CreateUser($userData: CustomUserInput!) {
+    createUser(userData: $userData) {
       user {
         id
         username

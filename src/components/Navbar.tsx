@@ -1,12 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { FaBars, FaTimes, FaShoppingCart, FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import  { useState, useEffect } from "react";
+import { 
+  FaBars, 
+  FaTimes, 
+  FaShoppingCart, 
+  FaFacebook, 
+  FaTwitter, 
+  FaInstagram,
+  FaUser,
+  FaHeart,
+  FaBox,
+  FaSignOutAlt,
+  FaHistory,
+  FaCog
+} from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../utils/useAuth"; // Import your auth hook
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {
@@ -21,6 +38,21 @@ const Navbar = () => {
   // Toggle mobile dropdown menu
   const toggleMobileDropdown = () => {
     setIsMobileDropdownOpen(!isMobileDropdownOpen);
+  };
+
+  // Toggle profile dropdown
+  const toggleProfileDropdown = () => {
+    setIsProfileDropdownOpen(!isProfileDropdownOpen);
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    // Implement your logout logic here
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    navigate('/login');
+    window.location.reload();
   };
 
   // Handle scroll for sticky navbar
@@ -107,15 +139,100 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Cart & Search Bar */}
+          {/* Cart, Search & Profile */}
           <div className="hidden md:flex items-center space-x-6">
-            <div className="relative">
-              <Link to="/cart" className="text-[#FFE31A] hover:text-[#FFE31A]/80 transition-colors">
-                <FaShoppingCart className="w-6 h-6" />
-              </Link>
+            {/* Search Bar */}
+            <input 
+              type="text" 
+              placeholder="Search products..." 
+              className="bg-gray-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE31A]" 
+            />
+            
+            {/* Wishlist */}
+            <Link to="/wishlist" className="text-[#FFE31A] hover:text-[#FFE31A]/80 transition-colors relative">
+              <FaHeart className="w-6 h-6" />
+              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">5</span>
+            </Link>
+            
+            {/* Cart */}
+            <Link to="/cart" className="text-[#FFE31A] hover:text-[#FFE31A]/80 transition-colors relative">
+              <FaShoppingCart className="w-6 h-6" />
               <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">3</span>
-            </div>
-            <input type="text" placeholder="Search products..." className="bg-gray-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE31A]" />
+            </Link>
+            
+            {/* Profile Dropdown */}
+            {isAuthenticated ? (
+              <div className="relative">
+                <button 
+                  onClick={toggleProfileDropdown}
+                  className="flex items-center space-x-2 focus:outline-none"
+                >
+                  <div className="w-8 h-8 rounded-full bg-[#FFE31A] flex items-center justify-center">
+                    {user?.username?.charAt(0).toUpperCase() || <FaUser className="text-gray-900" />}
+                  </div>
+                </button>
+                
+                {isProfileDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg py-1 z-50">
+                    <div className="px-4 py-2 border-b border-gray-700">
+                      <p className="text-sm font-medium text-[#FFE31A]">{user?.username}</p>
+                      <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                    </div>
+                    <Link 
+                      to="/profile" 
+                      className="flex items-center px-4 py-2 text-sm hover:bg-gray-700"
+                    >
+                      <FaUser className="mr-2" /> Profile
+                    </Link>
+                    <Link 
+                      to="/wishlist" 
+                      className="flex items-center px-4 py-2 text-sm hover:bg-gray-700"
+                    >
+                      <FaHeart className="mr-2" /> Wishlist
+                    </Link>
+                    <Link 
+                      to="/orders" 
+                      className="flex items-center px-4 py-2 text-sm hover:bg-gray-700"
+                    >
+                      <FaBox className="mr-2" /> My Orders
+                    </Link>
+                    <Link 
+                      to="/order-history" 
+                      className="flex items-center px-4 py-2 text-sm hover:bg-gray-700"
+                    >
+                      <FaHistory className="mr-2" /> Order History
+                    </Link>
+                    <Link 
+                      to="/settings" 
+                      className="flex items-center px-4 py-2 text-sm hover:bg-gray-700"
+                    >
+                      <FaCog className="mr-2" /> Settings
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left flex items-center px-4 py-2 text-sm hover:bg-gray-700"
+                    >
+                      <FaSignOutAlt className="mr-2" /> Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex space-x-4">
+                <Link 
+                  to="/login" 
+                  className="px-3 py-1 bg-[#FFE31A] text-gray-900 rounded-lg hover:bg-[#FFE31A]/90 transition-colors"
+                >
+                  Login
+                </Link>
+                <Link 
+                  to="/register" 
+                  className="px-3 py-1 border border-[#FFE31A] text-[#FFE31A] rounded-lg hover:bg-[#FFE31A] hover:text-gray-900 transition-colors"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -147,6 +264,26 @@ const Navbar = () => {
 
             <Link to="/about-us" className="block px-4 py-2 hover:bg-gray-700">About Us</Link>
             <Link to="/contact-us" className="block px-4 py-2 hover:bg-gray-700">Contact</Link>
+
+            {/* Mobile Auth Links */}
+            {isAuthenticated ? (
+              <>
+                <Link to="/profile" className="block px-4 py-2 hover:bg-gray-700">Profile</Link>
+                <Link to="/wishlist" className="block px-4 py-2 hover:bg-gray-700">Wishlist</Link>
+                <Link to="/orders" className="block px-4 py-2 hover:bg-gray-700">My Orders</Link>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left block px-4 py-2 hover:bg-gray-700"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="block px-4 py-2 hover:bg-gray-700">Login</Link>
+                <Link to="/register" className="block px-4 py-2 hover:bg-gray-700">Register</Link>
+              </>
+            )}
 
             {/* Search Bar (Mobile) */}
             <div className="px-4 py-2">

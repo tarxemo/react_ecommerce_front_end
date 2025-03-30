@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import {  GET_ALL_USERS } from '../api/queries'; // Adjust the path as needed
 import {   CREATE_USER,  UPDATE_USER, DELETE_USER} from '../api/mutations'; 
-import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 import Header from '../components/Header';
 import AdminSidebar from '../components/AdminSidebar';
 

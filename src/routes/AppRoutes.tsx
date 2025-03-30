@@ -6,7 +6,6 @@ import CartPage from '../pages/CartPage';
 import CheckoutPage from '../pages/CheckoutPage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
-import OrderHistoryPage from '../pages/OrderHistoryPage';
 import OrderDetailPage from '../pages/OrderDetailPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import CreateProductPage from '../pages/CreateProductPage';
@@ -14,6 +13,7 @@ import AboutUsPage from '../pages/AboutUsPage';
 import ContactUsPage from '../pages/ContactUsPage';
 import AdminHomepage from '../pages/AdminHomepage';
 import UserManagementPage from '../pages/UserManagementPage';
+import OrdersPage from '../pages/OrdersPage';
 
 const AppRoutes = () => {
   return (
@@ -31,7 +31,7 @@ const AppRoutes = () => {
         <Route path="/admin/users" element={<UserManagementPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/orders" element={<OrderHistoryPage />} />
+        <Route path="/orders" element={<OrdersPage />} />
         <Route path="/orders/:id" element={<OrderDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

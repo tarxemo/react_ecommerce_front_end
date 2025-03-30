@@ -5,8 +5,6 @@ import { Link } from 'react-router-dom';
 import { FaStar, FaFilter, FaSortAmountDown, FaSearch } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { div } from 'framer-motion/client';
-import Button from '../components/Button';
 
 const ProductsPage = () => {
   const { data, loading, error } = useQuery(GET_ALL_PRODUCTS);
@@ -108,7 +106,6 @@ const ProductsPage = () => {
           >
             <img
               src={`http://127.0.0.1:8000/media/${product.image}`}
-              alt={product.name}
               className="w-full h-48 object-cover rounded-lg mb-4"
             />
             <h2 className="text-xl font-semibold mb-2 text-[#FFE31A]">{product.name}</h2>
