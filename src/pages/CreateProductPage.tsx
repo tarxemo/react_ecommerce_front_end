@@ -94,6 +94,7 @@ const CreateProductPage = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div>
