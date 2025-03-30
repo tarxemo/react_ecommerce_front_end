@@ -76,7 +76,7 @@ const CreateProductPage = () => {
     try {
       const token = localStorage.getItem('accessToken'); // Get auth token from storage
       const response = await axios.post(
-        'http://127.0.0.1:8000/products/create/', 
+        'https://tar.pythonanywhere.com/products/create/', 
         formDataToSend,
         {
           headers: {
