@@ -36,7 +36,7 @@ const errorLink = new ApolloLink((operation, forward) => {
           }
 
           // Refresh the token
-          fetch('http://127.0.0.1:8000/graphql/', {
+          fetch('https://tar.pythonanywhere.com/graphql/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
