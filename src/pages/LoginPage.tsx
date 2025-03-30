@@ -32,7 +32,7 @@ const LoginPage = () => {
     <div className="bg-gray-900 text-white min-h-screen">
       <Navbar />
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-4">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-2xl w-full max-w-4xl backdrop-blur-md bg-opacity-80 animate-fadeIn flex flex-col md:flex-row">
+      <div className="bg-gray-800 p-8 shadow-2xl w-full max-w-4xl backdrop-blur-md bg-opacity-80 animate-fadeIn flex flex-col md:flex-row">
         {/* Left Section - Login Form */}
         <div className="w-full md:w-1/2 p-6">
           <h2 className="text-3xl font-bold mb-4 text-[#FFE31A] text-center md:text-left">Welcome Back!</h2>
@@ -48,7 +48,7 @@ const LoginPage = () => {
                 id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-[#FFE31A]"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:border-[#FFE31A]"
                 required
               />
             </div>
@@ -61,14 +61,14 @@ const LoginPage = () => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-[#FFE31A]"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:border-[#FFE31A]"
                 required
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#FFE31A] text-gray-900 py-2 rounded-lg hover:bg-[#FFD700] transition-colors font-semibold shadow-md"
+              className="w-full bg-[#FFE31A] text-gray-900 py-2 hover:bg-[#FFD700] transition-colors font-semibold shadow-md"
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
@@ -80,7 +80,7 @@ const LoginPage = () => {
         
         {/* Right Section - Image and Description */}
         <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-6">
-          <img src="/images/hero-bg.jpg" alt="E-commerce Promotion" className="w-full h-64 mb-4 rounded-lg shadow-lg" />
+          <img src="/images/hero-bg.jpg" alt="E-commerce Promotion" className="w-full h-64 mb-4 shadow-lg" />
           <h3 className="text-xl font-semibold text-[#FFE31A] text-center">Shop the Best Deals!</h3>
           <p className="text-sm text-gray-300 text-center mt-2">Discover high-quality products at unbeatable prices. Your one-stop online shop for all your needs!</p>
         </div>
