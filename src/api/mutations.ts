@@ -7,9 +7,17 @@ export const LOGIN_USER = gql`
       accessToken
       refreshToken
       user {
-        id
-        username
+        address
+        createdAt
+        dateOfBirth
         email
+        id
+        isVerified
+        phoneNumber
+        profilePicture
+        updatedAt
+        userType
+        username
       }
     }
   }
@@ -36,7 +44,7 @@ export const LOGOUT_USER = gql`
 // User Mutations
 export const CREATE_USER = gql`
   mutation CreateUser($userData: UserInput!) {
-    createUser(userData: $userData) {
+    createCustomUser(userData: $userData) {
       user {
         id
         username
@@ -55,7 +63,7 @@ export const CREATE_USER = gql`
 `;
 
 export const UPDATE_USER = gql`
-  mutation UpdateUser($id: ID!, $userData: UserInput!) {
+  mutation UpdateCustomUser($id: ID!, $userData: UserInput!) {
     updateUser(id: $id, userData: $userData) {
       user {
         id

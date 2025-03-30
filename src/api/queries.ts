@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 
 // User Queries
 export const GET_ALL_USERS = gql`
-  query GetAllUsers {
-    users {
+  query MyQuery {
+    CustomUsers {
       id
       username
       email
@@ -18,6 +18,7 @@ export const GET_ALL_USERS = gql`
     }
   }
 `;
+
 
 export const GET_USER_BY_ID = gql`
   query GetUserById($id: ID!) {
@@ -90,6 +91,52 @@ export const GET_ALL_PRODUCTS = gql`
       rating
       createdAt
       updatedAt
+    }
+  }
+`;
+
+export const GET_PRODUCT_DETAILS = gql`
+  query GetProductDetails($id: ID!) {
+    product(id: $id) {
+      id
+      name
+      description
+      price
+      stockQuantity
+      isAvailable
+      image
+      sku
+      brand
+      rating
+      category {
+        id
+        name
+        description
+      }
+      seller {
+        id
+        username
+        email
+        phoneNumber
+        address
+      }
+      variations {
+        id
+        variationType
+        variationValue
+        priceModifier
+        stockQuantity
+      }
+      reviews {
+        id
+        user {
+          id
+          username
+        }
+        rating
+        comment
+        createdAt
+      }
     }
   }
 `;

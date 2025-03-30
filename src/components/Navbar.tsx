@@ -99,10 +99,10 @@ const Navbar = () => {
               )}
             </div>
 
-            <Link to="/about" className="hover:text-[#FFE31A] transition-colors">
+            <Link to="/about-us" className="hover:text-[#FFE31A] transition-colors">
               About Us
             </Link>
-            <Link to="/contact" className="hover:text-[#FFE31A] transition-colors">
+            <Link to="/contact-us" className="hover:text-[#FFE31A] transition-colors">
               Contact
             </Link>
           </div>
@@ -145,8 +145,8 @@ const Navbar = () => {
               </div>
             )}
 
-            <Link to="/about" className="block px-4 py-2 hover:bg-gray-700">About Us</Link>
-            <Link to="/contact" className="block px-4 py-2 hover:bg-gray-700">Contact</Link>
+            <Link to="/about-us" className="block px-4 py-2 hover:bg-gray-700">About Us</Link>
+            <Link to="/contact-us" className="block px-4 py-2 hover:bg-gray-700">Contact</Link>
 
             {/* Search Bar (Mobile) */}
             <div className="px-4 py-2">

@@ -1,38 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
-import { CREATE_PRODUCT } from '../api/mutations';
+import React, { useState } from 'react';
+import { useQuery } from '@apollo/client';
 import { GET_ALL_CATEGORIES } from '../api/queries';
 import { useNavigate } from 'react-router-dom';
 import { FaUpload } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import axios from 'axios';
 
 const CreateProductPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    price: 0,
+    price: '',
     categoryId: '',
-    stockQuantity: 0,
-    isAvailable: true,
+    stockQuantity: '',
+    isAvailable: true, // Set as a boolean
     sku: '',
     brand: '',
   });
   const [image, setImage] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch categories
+  // Fetch categories using GraphQL
   const { data: categoriesData, loading: categoriesLoading, error: categoriesError } = useQuery(GET_ALL_CATEGORIES);
 
-  const [createProduct, { loading, error }] = useMutation(CREATE_PRODUCT, {
-    onCompleted: () => {
-      navigate('/products'); // Redirect to products page after creation
-    },
-  });
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, type, checked, value } = e.target;
+    
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    });
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,12 +48,40 @@ const CreateProductPage = () => {
       return;
     }
 
-    await createProduct({
-      variables: {
-        productData: formData,
-        image,
-      },
-    });
+    setLoading(true);
+    setError(null);
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', formData.name);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('price', formData.price);
+    formDataToSend.append('categoryId', formData.categoryId);
+    formDataToSend.append('stockQuantity', formData.stockQuantity);
+    formDataToSend.append('isAvailable', String(formData.isAvailable)); // Convert boolean to string
+    formDataToSend.append('sku', formData.sku);
+    formDataToSend.append('brand', formData.brand);
+    formDataToSend.append('image', image); // Append the image file
+
+    try {
+      const token = localStorage.getItem('accessToken'); // Get auth token from storage
+      const response = await axios.post(
+        'http://127.0.0.1:8000/products/create/', 
+        formDataToSend,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`, // Include token in request
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      console.log('Product created:', response.data);
+      navigate('/products'); // Redirect to product list page
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to create product');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -62,9 +90,7 @@ const CreateProductPage = () => {
       <div className="bg-gray-900 text-white min-h-screen p-6">
         <h1 className="text-4xl font-bold mb-8 text-[#FFE31A]">Create New Product</h1>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6 px-4">
-          {/* Row 1: Name and SKU */}
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
             <div className="flex-1">
               <label className="block text-sm font-medium mb-2">Product Name</label>
@@ -73,7 +99,7 @@ const CreateProductPage = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full bg-gray-800 text-white p-2 focus:outline-none focus:ring-2 focus:ring-[#FFE31A]"
+                className="w-full bg-gray-800 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
                 required
               />
             </div>
@@ -84,26 +110,24 @@ const CreateProductPage = () => {
                 name="sku"
                 value={formData.sku}
                 onChange={handleChange}
-                className="w-full bg-gray-800 text-white p-2 focus:outline-none focus:ring-2 focus:ring-[#FFE31A]"
+                className="w-full bg-gray-800 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
                 required
               />
             </div>
           </div>
 
-          {/* Row 2: Description */}
           <div>
             <label className="block text-sm font-medium mb-2">Description</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full bg-gray-800 text-white p-2 focus:outline-none focus:ring-2 focus:ring-[#FFE31A]"
+              className="w-full bg-gray-800 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
               rows={4}
               required
             />
           </div>
 
-          {/* Row 3: Price, Stock Quantity, and Brand */}
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
             <div className="flex-1">
               <label className="block text-sm font-medium mb-2">Price</label>
@@ -112,7 +136,7 @@ const CreateProductPage = () => {
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                className="w-full bg-gray-800 text-white p-2 focus:outline-none focus:ring-2 focus:ring-[#FFE31A]"
+                className="w-full bg-gray-800 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
                 required
               />
             </div>
@@ -123,7 +147,7 @@ const CreateProductPage = () => {
                 name="stockQuantity"
                 value={formData.stockQuantity}
                 onChange={handleChange}
-                className="w-full bg-gray-800 text-white p-2 focus:outline-none focus:ring-2 focus:ring-[#FFE31A]"
+                className="w-full bg-gray-800 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
                 required
               />
             </div>
@@ -134,13 +158,12 @@ const CreateProductPage = () => {
                 name="brand"
                 value={formData.brand}
                 onChange={handleChange}
-                className="w-full bg-gray-800 text-white p-2 focus:outline-none focus:ring-2 focus:ring-[#FFE31A]"
+                className="w-full bg-gray-800 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
                 required
               />
             </div>
           </div>
 
-          {/* Row 4: Category and Availability */}
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
             <div className="flex-1">
               <label className="block text-sm font-medium mb-2">Category</label>
@@ -148,7 +171,7 @@ const CreateProductPage = () => {
                 name="categoryId"
                 value={formData.categoryId}
                 onChange={handleChange}
-                className="w-full bg-gray-800 text-white p-2 focus:outline-none focus:ring-2 focus:ring-[#FFE31A]"
+                className="w-full bg-gray-800 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
                 required
               >
                 <option value="">Select Category</option>
@@ -159,54 +182,37 @@ const CreateProductPage = () => {
                 ))}
               </select>
             </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium mb-2">Availability</label>
-              <select
+
+            {/* Updated Availability Field */}
+            <div className="flex-1 flex items-center space-x-2">
+              <input
+                type="checkbox"
                 name="isAvailable"
-                value={formData.isAvailable.toString()}
-                onChange={(e) => setFormData({ ...formData, isAvailable: e.target.value === 'true' })}
-                className="w-full bg-gray-800 text-white p-2 focus:outline-none focus:ring-2 focus:ring-[#FFE31A]"
-                required
-              >
-                <option value="true">Available</option>
-                <option value="false">Out of Stock</option>
-              </select>
+                checked={formData.isAvailable}
+                onChange={handleChange}
+                className="w-5 h-5 text-[#FFE31A] bg-gray-800 border-gray-600 focus:ring-[#FFE31A]"
+              />
+              <label className="text-sm font-medium">Available</label>
             </div>
           </div>
 
-          {/* Row 5: Image Upload */}
           <div>
             <label className="block text-sm font-medium mb-2">Product Image</label>
             <div className="flex items-center space-x-4">
               <label className="flex items-center bg-gray-800 text-white p-2 cursor-pointer hover:bg-gray-700">
                 <FaUpload className="mr-2" />
                 Upload Image
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
-                  required
-                />
+                <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" required />
               </label>
               {image && <span className="text-sm text-gray-400">{image.name}</span>}
             </div>
           </div>
 
-          {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              disabled={loading || categoriesLoading}
-              className="px-2 bg-[#FFE31A] text-gray-900 py-2 hover:bg-[#FFE31A]/90 transition-colors"
-            >
-              {loading ? 'Creating...' : 'Create Product'}
-            </button>
-          </div>
+          <button type="submit" disabled={loading || categoriesLoading} className="px-4 py-2 bg-[#FFE31A] text-gray-900">
+            {loading ? 'Creating...' : 'Create Product'}
+          </button>
 
-          {/* Error Messages */}
-          {error && <p className="text-red-500 text-center">{error.message}</p>}
-          {categoriesError && <p className="text-red-500 text-center">Failed to load categories: {categoriesError.message}</p>}
+          {error && <p className="text-red-500">{error}</p>}
         </form>
       </div>
       <Footer />
