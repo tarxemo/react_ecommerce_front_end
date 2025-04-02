@@ -6,6 +6,7 @@ import { FaUpload } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import axios from 'axios';
+import { ENDPOINT } from '../api/environment';
 
 const CreateProductPage = () => {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ const CreateProductPage = () => {
     try {
       const token = localStorage.getItem('accessToken'); // Get auth token from storage
       const response = await axios.post(
-        'https://tar.pythonanywhere.com/products/create/', 
+        `${ENDPOINT}/products/create/`, 
         formDataToSend,
         {
           headers: {

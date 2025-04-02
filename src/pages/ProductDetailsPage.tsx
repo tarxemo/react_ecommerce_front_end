@@ -20,6 +20,7 @@ import { FaStar, FaArrowLeft, FaShoppingCart, FaHeart, FaRegHeart } from 'react-
 import Navbar from '../components/Navbar';
 import { useAuth } from "../utils/useAuth";
 import Footer from '../components/Footer';
+import { getCloudinaryUrl } from '../utils/cloudinary';
 
 const ProductDetailsPage = () => {
   const { id } = useParams();
@@ -261,7 +262,7 @@ const ProductDetailsPage = () => {
           {/* Product Image */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <img
-              src={`https://tar.pythonanywhere.com/media/${product.image}`}
+              src={getCloudinaryUrl(product.image)}
               alt={product.name}
               className="w-full h-96 object-cover rounded-lg"
             />

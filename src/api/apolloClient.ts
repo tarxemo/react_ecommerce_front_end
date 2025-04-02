@@ -4,9 +4,12 @@ import { Observable } from '@apollo/client/utilities';
 import { getAccessToken, getRefreshToken, setAuthToken } from '../utils/auth';
 import { REFRESH_TOKEN } from '../api/mutations';
 
+import { ENDPOINT } from '../api/environment';
+
 const httpLink = createHttpLink({
-  uri: 'https://tar.pythonanywhere.com/graphql/', // Your Django GraphQL Endpoint
+  uri: `${ENDPOINT}/graphql/`, // Correct string interpolation
 });
+
 
 // Add the JWT token to the headers
 const authLink = setContext((_, { headers }) => {
@@ -36,7 +39,7 @@ const errorLink = new ApolloLink((operation, forward) => {
           }
 
           // Refresh the token
-          fetch('https://tar.pythonanywhere.com/graphql/', {
+          fetch(`${ENDPOINT}/graphql/`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

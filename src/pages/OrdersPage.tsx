@@ -6,6 +6,7 @@ import { useAuth } from '../utils/useAuth';
 import { FaBox, FaCheck, FaTimes, FaTrash, FaEdit, FaSpinner, FaTruck, FaCheckCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { getCloudinaryUrl } from '../utils/cloudinary';
 
 const OrdersPage = () => {
   const { isAuthenticated } = useAuth();
@@ -237,7 +238,7 @@ const OrdersPage = () => {
                             <div className="w-20 h-20 bg-gray-700 rounded-lg mr-4 overflow-hidden">
                               {item.product.image && (
                                 <img 
-                                  src={`https://tar.pythonanywhere.com/media/${item.product.image}`} 
+                                  src={getCloudinaryUrl(item.product.image)}
                                   alt={item.product.name}
                                   className="w-full h-full object-cover"
                                 />
