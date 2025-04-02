@@ -1,1 +1,1 @@
-export const ENDPOINT='https://tar.pythonanywhere.com/'
+export const ENDPOINT='https://tar.pythonanywhere.com'
