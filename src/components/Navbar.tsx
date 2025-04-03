@@ -85,8 +85,8 @@ const Navbar = () => {
 
           {/* Contact Info */}
           <div className="text-sm flex flex-row">
-            <span className="hidden md:flex md:flex-row mr-4">Email: support@ecommerceapp.com</span>
-            <span>Phone: +123 456 7890</span>
+            <span className="hidden md:flex md:flex-row mr-4">Email: code@tarxemo.com</span>
+            <span>Phone: +255 742106833</span>
           </div>
         </div>
       </div>
