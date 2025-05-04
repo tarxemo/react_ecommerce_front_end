@@ -100,6 +100,7 @@ const ProductDetailsPage = () => {
     if (carts.length === 0) {
       // If no carts exist, create one automatically
       handleAddToCart(null);
+      refetchCart();
     } else if (carts.length === 1) {
       // If only one cart exists, use it directly
       handleAddToCart(carts[0].id);
