@@ -53,7 +53,7 @@ const errorLink = new ApolloLink((operation, forward) => {
             .then(({ data }) => {
               if (data?.refreshToken?.accessToken) {
                 // Save the new access token
-                setAuthToken(data.refreshToken.accessToken, refreshToken, data.refreshToken.user);
+                setAuthToken(data);
 
                 // Update the headers with the new token
                 operation.setContext(({ headers = {} }) => ({

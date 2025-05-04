@@ -14,6 +14,10 @@ import ContactUsPage from '../pages/ContactUsPage';
 import AdminHomepage from '../pages/AdminHomepage';
 import UserManagementPage from '../pages/UserManagementPage';
 import OrdersPage from '../pages/OrdersPage';
+import OrderConfirmationPage from '../pages/OrderConfirmationPage';
+import WishlistPage from '../pages/WishlistPage';
+import ProfilePage from '../pages/ProfilePage';
+import UserProfile from '../pages/UserProfile';
 
 const AppRoutes = () => {
   return (
@@ -29,11 +33,16 @@ const AppRoutes = () => {
         <Route path="/contact-us" element={<ContactUsPage />} />
         <Route path="/admin" element={<AdminHomepage />} />
         <Route path="/admin/users" element={<UserManagementPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/orders/:id" element={<OrderDetailPage />} />
+        <Route path="/wishlist" element={<WishlistPage />} />
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/checkout/:cartId" element={<CheckoutPage />} />
+        <Route path="/order-confirmation/:orderId" element={<OrderConfirmationPage />} />
+        <Route path="/user/:username" element={<UserProfile />} />
       </Routes>
     </Router>
   );

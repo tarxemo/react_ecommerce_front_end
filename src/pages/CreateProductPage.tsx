@@ -2,11 +2,18 @@ import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_CATEGORIES } from '../api/queries';
 import { useNavigate } from 'react-router-dom';
-import { FaUpload } from 'react-icons/fa';
+import { FaUpload, FaPlus, FaMinus } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import axios from 'axios';
 import { ENDPOINT } from '../api/environment';
+
+interface Variation {
+  variation_type: string;
+  variation_value: string;
+  price_modifier: string;
+  stock_quantity: string;
+}
 
 const CreateProductPage = () => {
   const navigate = useNavigate();
@@ -15,12 +22,20 @@ const CreateProductPage = () => {
     description: '',
     price: '',
     categoryId: '',
-    stockQuantity: '',
-    isAvailable: true, // Set as a boolean
+    stockQuantity: '0', // Will be calculated from variations
+    isAvailable: true,
     sku: '',
     brand: '',
   });
   const [image, setImage] = useState<File | null>(null);
+  const [variations, setVariations] = useState<Variation[]>([
+    {
+      variation_type: '',
+      variation_value: '',
+      price_modifier: '0.00',
+      stock_quantity: '0',
+    },
+  ]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,24 +43,44 @@ const CreateProductPage = () => {
   const { data: categoriesData, loading: categoriesLoading } = useQuery(GET_ALL_CATEGORIES);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, type, value } = e.target;
-  
-    // Type narrowing: Ensure we're working with an HTMLInputElement
-    if (type === 'checkbox' || type === 'radio') {
-      // We are now confident that checked exists on e.target
-      setFormData({
-        ...formData, // Use checked for checkbox or radio button
-      });
-    } else {
-      // For other types like text or select, use value
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
-  
-  
+
+  const handleVariationChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const updatedVariations = [...variations];
+    updatedVariations[index] = {
+      ...updatedVariations[index],
+      [name]: value,
+    };
+    setVariations(updatedVariations);
+  };
+
+  const addVariation = () => {
+    setVariations([
+      ...variations,
+      {
+        variation_type: '',
+        variation_value: '',
+        price_modifier: '0.00',
+        stock_quantity: '0',
+      },
+    ]);
+  };
+
+  const removeVariation = (index: number) => {
+    if (variations.length <= 1) {
+      alert('You must have at least one variation');
+      return;
+    }
+    const updatedVariations = [...variations];
+    updatedVariations.splice(index, 1);
+    setVariations(updatedVariations);
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -60,6 +95,14 @@ const CreateProductPage = () => {
       return;
     }
 
+    // Validate variations
+    for (const variation of variations) {
+      if (!variation.variation_type || !variation.variation_value) {
+        setError('Please fill in all variation fields');
+        return;
+      }
+    }
+
     setLoading(true);
     setError(null);
 
@@ -68,34 +111,35 @@ const CreateProductPage = () => {
     formDataToSend.append('description', formData.description);
     formDataToSend.append('price', formData.price);
     formDataToSend.append('categoryId', formData.categoryId);
-    formDataToSend.append('stockQuantity', formData.stockQuantity);
-    formDataToSend.append('isAvailable', String(formData.isAvailable)); // Convert boolean to string
+    formDataToSend.append('stockQuantity', '0'); // Will be calculated from variations
+    formDataToSend.append('isAvailable', String(formData.isAvailable));
     formDataToSend.append('sku', formData.sku);
     formDataToSend.append('brand', formData.brand);
-    formDataToSend.append('image', image); // Append the image file
+    formDataToSend.append('image', image);
+    formDataToSend.append('variations', JSON.stringify(variations));
+
 
     try {
-      const token = localStorage.getItem('accessToken'); // Get auth token from storage
+      const token = localStorage.getItem('accessToken');
       const response = await axios.post(
         `${ENDPOINT}/products/create/`, 
         formDataToSend,
         {
           headers: {
-            'Authorization': `Bearer ${token}`, // Include token in request
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
           },
         }
       );
 
       console.log('Product created:', response.data);
-      navigate('/products'); // Redirect to product list page
+      navigate('/products');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to create product');
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
     <div>
@@ -143,22 +187,11 @@ const CreateProductPage = () => {
 
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
             <div className="flex-1">
-              <label className="block text-sm font-medium mb-2">Price</label>
+              <label className="block text-sm font-medium mb-2">Base Price</label>
               <input
                 type="number"
                 name="price"
                 value={formData.price}
-                onChange={handleChange}
-                className="w-full bg-gray-800 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
-                required
-              />
-            </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium mb-2">Stock Quantity</label>
-              <input
-                type="number"
-                name="stockQuantity"
-                value={formData.stockQuantity}
                 onChange={handleChange}
                 className="w-full bg-gray-800 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
                 required
@@ -196,17 +229,96 @@ const CreateProductPage = () => {
               </select>
             </div>
 
-            {/* Updated Availability Field */}
             <div className="flex-1 flex items-center space-x-2">
               <input
                 type="checkbox"
                 name="isAvailable"
                 checked={formData.isAvailable}
-                onChange={handleChange}
+                onChange={() => setFormData({...formData, isAvailable: !formData.isAvailable})}
                 className="w-5 h-5 text-[#FFE31A] bg-gray-800 border-gray-600 focus:ring-[#FFE31A]"
               />
               <label className="text-sm font-medium">Available</label>
             </div>
+          </div>
+
+          {/* Product Variations Section */}
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-[#FFE31A]">Product Variations</h2>
+              <button
+                type="button"
+                onClick={addVariation}
+                className="flex items-center px-3 py-1 bg-[#FFE31A] text-gray-900 rounded"
+              >
+                <FaPlus className="mr-1" /> Add Variation
+              </button>
+            </div>
+
+            {variations.map((variation, index) => (
+              <div key={index} className="bg-gray-800 p-4 rounded-lg space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium">Variation #{index + 1}</h3>
+                  <button
+                    type="button"
+                    onClick={() => removeVariation(index)}
+                    className="text-red-500 hover:text-red-400"
+                  >
+                    <FaMinus />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Type (e.g., Size, Color)</label>
+                    <input
+                      type="text"
+                      name="variation_type"
+                      value={variation.variation_type}
+                      onChange={(e) => handleVariationChange(index, e)}
+                      className="w-full bg-gray-700 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Value (e.g., Large, Red)</label>
+                    <input
+                      type="text"
+                      name="variation_value"
+                      value={variation.variation_value}
+                      onChange={(e) => handleVariationChange(index, e)}
+                      className="w-full bg-gray-700 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Price Modifier</label>
+                    <input
+                      type="number"
+                      name="price_modifier"
+                      value={variation.price_modifier}
+                      onChange={(e) => handleVariationChange(index, e)}
+                      className="w-full bg-gray-700 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
+                      step="0.01"
+                      min="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Stock Quantity</label>
+                    <input
+                      type="number"
+                      name="stock_quantity"
+                      value={variation.stock_quantity}
+                      onChange={(e) => handleVariationChange(index, e)}
+                      className="w-full bg-gray-700 text-white p-2 focus:ring-2 focus:ring-[#FFE31A]"
+                      min="0"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
           <div>
@@ -221,7 +333,11 @@ const CreateProductPage = () => {
             </div>
           </div>
 
-          <button type="submit" disabled={loading || categoriesLoading} className="px-4 py-2 bg-[#FFE31A] text-gray-900">
+          <button 
+            type="submit" 
+            disabled={loading || categoriesLoading} 
+            className="px-4 py-2 bg-[#FFE31A] text-gray-900 font-medium rounded hover:bg-yellow-500 transition"
+          >
             {loading ? 'Creating...' : 'Create Product'}
           </button>
 

@@ -6,6 +6,8 @@ export const LOGIN_USER = gql`
     login(username: $username, password: $password) {
       accessToken
       refreshToken
+      cart
+      wishlist
       user {
         address
         createdAt
@@ -23,6 +25,61 @@ export const LOGIN_USER = gql`
   }
 `;
 
+export const UPDATE_USER_PROFILE = gql`
+  mutation UpdateUserProfile(
+    $first_name: String
+    $last_name: String
+    $email: String
+    $phone_number: String
+    $address: String
+    $date_of_birth: String
+  ) {
+    updateUserProfile(
+      firstName: $first_name
+      lastName: $last_name
+      email: $email
+      phoneNumber: $phone_number
+      address: $address
+      dateOfBirth: $date_of_birth
+    ) {
+      success
+      errors
+      user {
+        id
+        username
+        email
+        firstName
+        lastName
+        phoneNumber
+        address
+        dateOfBirth
+        profilePicture
+      }
+    }
+  }
+`;
+
+export const UPDATE_PROFILE_PICTURE = gql`
+  mutation UpdateProfilePicture($profile_picture: Upload!) {
+    updateProfilePicture(profilePicture: $profile_picture) {
+      success
+      errors
+      user {
+        id
+        profilePicture
+      }
+    }
+  }
+`;
+
+export const UPDATE_PASSWORD = gql`
+  mutation UpdatePassword($old_password: String!, $new_password: String!) {
+    updatePassword(oldPassword: $old_password, newPassword: $new_password) {
+      success
+      errors
+    }
+  }
+`;
 // Refresh Token Mutation
 export const REFRESH_TOKEN = gql`
   mutation RefreshToken($refreshToken: String!) {
@@ -63,8 +120,8 @@ export const CREATE_USER = gql`
 `;
 
 export const UPDATE_USER = gql`
-  mutation UpdateCustomUser($id: ID!, $userData: UserInput!) {
-    updateUser(id: $id, userData: $userData) {
+  mutation UpdateCustomUser($userData: UserInput!) {
+    updateUser(userData: $userData) {
       user {
         id
         username
@@ -258,8 +315,8 @@ export const CREATE_CART = gql`
 `;
 
 export const UPDATE_CART = gql`
-  mutation UpdateCart($id: ID!, $cartData: CartInput!) {
-    updateCart(id: $id, cartData: $cartData) {
+  mutation UpdateCart($cartData: CartInput!) {
+    updateCart(cartData: $cartData) {
       cart {
         id
         user {
@@ -547,6 +604,7 @@ export const DELETE_REVIEW = gql`
 export const CREATE_WISHLIST = gql`
   mutation CreateWishlist($wishlistData: WishlistInput!) {
     createWishlist(wishlistData: $wishlistData) {
+      myWishlist
       wishlist {
         id
         user {
@@ -585,6 +643,7 @@ export const UPDATE_WISHLIST = gql`
 export const DELETE_WISHLIST = gql`
   mutation DeleteWishlist($id: ID!) {
     deleteWishlist(id: $id) {
+      myWishlist
       success
     }
   }

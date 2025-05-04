@@ -1,4 +1,4 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { 
   FaBars, 
   FaTimes, 
@@ -10,11 +10,14 @@ import {
   FaHeart,
   FaBox,
   FaSignOutAlt,
-  FaHistory,
-  FaCog
+  FaSpinner
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../utils/useAuth"; // Import your auth hook
+import { useAuth } from "../utils/useAuth";
+import { getCart, getWishlist } from "../utils/auth";
+import { getCloudinaryUrl } from "../utils/cloudinary";
+import { useQuery } from "@apollo/client";
+import { GET_ALL_CATEGORIES } from "../api/queries";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -25,29 +28,27 @@ const Navbar = () => {
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // Toggle mobile menu
+  // Fetch categories
+  const { data: categoriesData, loading: categoriesLoading } = useQuery(GET_ALL_CATEGORIES);
+
+  // Toggle functions remain the same...
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Toggle dropdown menu
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // Toggle mobile dropdown menu
   const toggleMobileDropdown = () => {
     setIsMobileDropdownOpen(!isMobileDropdownOpen);
   };
 
-  // Toggle profile dropdown
   const toggleProfileDropdown = () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
-  // Handle logout
   const handleLogout = () => {
-    // Implement your logout logic here
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
@@ -55,7 +56,6 @@ const Navbar = () => {
     window.location.reload();
   };
 
-  // Handle scroll for sticky navbar
   useEffect(() => {
     const handleScroll = () => {
       setIsSticky(window.scrollY > 50);
@@ -70,7 +70,6 @@ const Navbar = () => {
       {/* Top Bar: Social Media & Contact */}
       <div className={`bg-gray-800 text-white py-2 transition-all duration-300 ${isSticky ? "opacity-0" : "opacity-100"}`}>
         <div className="container mx-auto flex justify-between items-center px-4">
-          {/* Social Media Links */}
           <div className="flex space-x-4">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
               <FaFacebook className="text-[#FFE31A] hover:text-[#FFE31A]/80 transition-colors" />
@@ -83,7 +82,6 @@ const Navbar = () => {
             </a>
           </div>
 
-          {/* Contact Info */}
           <div className="text-sm flex flex-row">
             <span className="hidden md:flex md:flex-row mr-4">Email: code@tarxemo.com</span>
             <span>Phone: +255 742106833</span>
@@ -117,59 +115,76 @@ const Navbar = () => {
                 </svg>
               </button>
               {isDropdownOpen && (
-                <div className="absolute top-full left-0 bg-gray-800 text-white py-2 mt-2 rounded-lg shadow-lg w-48">
-                  <Link to="/category/electronics" className="block px-4 py-2 hover:bg-gray-700">
-                    Electronics
-                  </Link>
-                  <Link to="/category/clothing" className="block px-4 py-2 hover:bg-gray-700">
-                    Clothing
-                  </Link>
-                  <Link to="/category/accessories" className="block px-4 py-2 hover:bg-gray-700">
-                    Accessories
-                  </Link>
+                <div className="absolute top-full left-0 bg-gray-800 text-white py-2 mt-2 rounded-lg shadow-lg w-48 max-h-96 overflow-y-auto">
+                  {categoriesLoading ? (
+                    <div className="flex justify-center p-2">
+                      <FaSpinner className="animate-spin text-[#FFE31A]" />
+                    </div>
+                  ) : (
+                    categoriesData?.categories?.map((category: { id: string; name: string }) => (
+                      <Link 
+                        key={category.id}
+                        to={`/products/?categoryId=${category.id}`}
+                        className="block px-4 py-2 hover:bg-gray-700"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        {category.name}
+                      </Link>
+                    ))
+                  )}
                 </div>
               )}
             </div>
-
-            <Link to="/about-us" className="hover:text-[#FFE31A] transition-colors">
-              About Us
-            </Link>
-            <Link to="/contact-us" className="hover:text-[#FFE31A] transition-colors">
-              Contact
-            </Link>
           </div>
 
           {/* Cart, Search & Profile */}
           <div className="hidden md:flex items-center space-x-6">
-            {/* Search Bar */}
             <input 
               type="text" 
               placeholder="Search products..." 
               className="bg-gray-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE31A]" 
             />
+            {isAuthenticated ? (
+              <>
+                <Link to="/wishlist" className="text-[#FFE31A] hover:text-[#FFE31A]/80 transition-colors relative">
+                  <FaHeart className="w-6 h-6" />
+                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">{getWishlist()}</span>
+                </Link>
+                <Link to="/cart" className="text-[#FFE31A] hover:text-[#FFE31A]/80 transition-colors relative">
+                  <FaShoppingCart className="w-6 h-6" />
+                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">{getCart()}</span>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/wishlist" className="text-[#FFE31A] hover:text-[#FFE31A]/80 transition-colors relative">
+                  <FaHeart className="w-6 h-6" />
+                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">0</span>
+                </Link>
+                <Link to="/cart" className="text-[#FFE31A] hover:text-[#FFE31A]/80 transition-colors relative">
+                  <FaShoppingCart className="w-6 h-6" />
+                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">0</span>
+                </Link>
+              </>
+            )}
             
-            {/* Wishlist */}
-            <Link to="/wishlist" className="text-[#FFE31A] hover:text-[#FFE31A]/80 transition-colors relative">
-              <FaHeart className="w-6 h-6" />
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">5</span>
-            </Link>
-            
-            {/* Cart */}
-            <Link to="/cart" className="text-[#FFE31A] hover:text-[#FFE31A]/80 transition-colors relative">
-              <FaShoppingCart className="w-6 h-6" />
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">3</span>
-            </Link>
-            
-            {/* Profile Dropdown */}
             {isAuthenticated ? (
               <div className="relative">
                 <button 
                   onClick={toggleProfileDropdown}
                   className="flex items-center space-x-2 focus:outline-none"
                 >
-                  <div className="w-8 h-8 rounded-full bg-[#FFE31A] flex items-center justify-center">
-                    {user?.username?.charAt(0).toUpperCase() || <FaUser className="text-gray-900" />}
-                  </div>
+                  {user?.profilePicture ? (
+                    <img
+                      src={getCloudinaryUrl(user.profilePicture)}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-[#FFE31A] flex items-center justify-center">
+                      {user?.username?.charAt(0).toUpperCase() || <FaUser className="text-gray-900" />}
+                    </div>
+                  )}
                 </button>
                 
                 {isProfileDropdownOpen && (
@@ -195,18 +210,6 @@ const Navbar = () => {
                       className="flex items-center px-4 py-2 text-sm hover:bg-gray-700"
                     >
                       <FaBox className="mr-2" /> My Orders
-                    </Link>
-                    <Link 
-                      to="/order-history" 
-                      className="flex items-center px-4 py-2 text-sm hover:bg-gray-700"
-                    >
-                      <FaHistory className="mr-2" /> Order History
-                    </Link>
-                    <Link 
-                      to="/settings" 
-                      className="flex items-center px-4 py-2 text-sm hover:bg-gray-700"
-                    >
-                      <FaCog className="mr-2" /> Settings
                     </Link>
                     <button
                       onClick={handleLogout}
@@ -256,15 +259,27 @@ const Navbar = () => {
             </button>
             {isMobileDropdownOpen && (
               <div className="pl-6 bg-gray-700">
-                <Link to="/category/electronics" className="block px-4 py-2 hover:bg-gray-600">Electronics</Link>
-                <Link to="/category/clothing" className="block px-4 py-2 hover:bg-gray-600">Clothing</Link>
-                <Link to="/category/accessories" className="block px-4 py-2 hover:bg-gray-600">Accessories</Link>
+                {categoriesLoading ? (
+                  <div className="flex justify-center p-2">
+                    <FaSpinner className="animate-spin text-[#FFE31A]" />
+                  </div>
+                ) : (
+                  categoriesData?.categories?.map((category: { id: string; name: string }) => (
+                    <Link 
+                      key={category.id}
+                      to={`/products/?categoryId=${category.id}`}
+                      className="block px-4 py-2 hover:bg-gray-600"
+                      onClick={() => {
+                        setIsMobileDropdownOpen(false);
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      {category.name}
+                    </Link>
+                  ))
+                )}
               </div>
             )}
-
-            <Link to="/about-us" className="block px-4 py-2 hover:bg-gray-700">About Us</Link>
-            <Link to="/contact-us" className="block px-4 py-2 hover:bg-gray-700">Contact</Link>
-
             {/* Mobile Auth Links */}
             {isAuthenticated ? (
               <>

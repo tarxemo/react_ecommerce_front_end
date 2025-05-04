@@ -18,7 +18,51 @@ export const GET_ALL_USERS = gql`
     }
   }
 `;
-
+// api/queries.ts
+export const GET_USER_PROFILE = gql`
+  query GetUserProfile($username: String!) {
+    getUserProfile(username: $username) {
+      id
+      username
+      firstName
+      lastName
+      profilePicture
+      dateJoined
+      userType
+      rating
+      totalProducts
+      products {
+        id
+        name
+        description
+        price
+        image
+        rating
+        category {
+          id
+          name
+        }
+        createdAt
+      }
+    }
+  }
+`;
+export const GET_ME = gql`
+  query GetMe {
+    me {
+      id
+      username
+      email
+      firstName
+      lastName
+      phoneNumber
+      address
+      dateOfBirth
+      profilePicture
+      userType
+    }
+  }
+`;
 
 export const GET_USER_BY_ID = gql`
   query GetUserById($id: ID!) {
@@ -82,6 +126,7 @@ export const GET_ALL_PRODUCTS = gql`
       seller {
         id
         username
+        profilePicture
       }
       stockQuantity
       isAvailable
@@ -108,6 +153,8 @@ export const GET_PRODUCT_DETAILS = gql`
       sku
       brand
       rating
+      wishlistCount
+      orderCount
       category {
         id
         name
@@ -182,6 +229,7 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
       seller {
         id
         username
+        profilePicture
       }
       stockQuantity
       isAvailable
@@ -209,6 +257,7 @@ export const GET_PRODUCTS_BY_SELLER = gql`
       seller {
         id
         username
+        profilePicture
       }
       stockQuantity
       isAvailable
@@ -303,13 +352,14 @@ export const GET_CART_BY_ID = gql`
 `;
 
 export const GET_CARTS_BY_USER = gql`
-  query GetCartsByUser($userId: ID!) {
-    cartsByUser(userId: $userId) {
+  query cartsByCustomuser {
+    cartsByCustomuser {
       id
       user {
         id
         username
       }
+      name
       isActive
       createdAt
       updatedAt
@@ -372,6 +422,7 @@ export const GET_CART_ITEMS_BY_CART = gql`
       product {
         id
         name
+        image
       }
       variation {
         id
@@ -497,6 +548,7 @@ export const GET_ORDER_ITEMS_BY_ORDER = gql`
       product {
         id
         name
+        image
       }
       variation {
         id
@@ -671,8 +723,8 @@ export const GET_WISHLIST_BY_ID = gql`
 `;
 
 export const GET_WISHLISTS_BY_USER = gql`
-  query GetWishlistsByUser($userId: ID!) {
-    wishlistsByUser(userId: $userId) {
+  query GetWishlistsByUser{
+    wishlistsByUser{
       id
       user {
         id
@@ -681,6 +733,8 @@ export const GET_WISHLISTS_BY_USER = gql`
       product {
         id
         name
+        image
+        price
       }
       addedAt
     }

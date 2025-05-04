@@ -14,7 +14,7 @@ const LoginPage = () => {
 
   const [loginUser, { loading }] = useMutation(LOGIN_USER, {
     onCompleted: (data) => {
-      setAuthToken(data.login.accessToken, data.login.refreshToken, data.login.user);
+      setAuthToken(data);
       navigate('/');
     },
     onError: (err) => {

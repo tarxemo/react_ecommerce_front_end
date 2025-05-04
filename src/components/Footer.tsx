@@ -9,10 +9,10 @@ const Footer = () => {
           <p className="mt-2">Your one-stop shop for everything.</p>
         </div>
         <div className="flex space-x-6 mt-4 md:mt-0">
-          <Link to="/about" className="hover:text-[#FFE31A]/80 transition-colors">
+          <Link to="/about-us" className="hover:text-[#FFE31A]/80 transition-colors">
             About Us
           </Link>
-          <Link to="/contact" className="hover:text-[#FFE31A]/80 transition-colors">
+          <Link to="/contact-us" className="hover:text-[#FFE31A]/80 transition-colors">
             Contact
           </Link>
           <Link to="/privacy" className="hover:text-[#FFE31A]/80 transition-colors">
