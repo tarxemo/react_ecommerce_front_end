@@ -32,9 +32,9 @@ const LoginPage = () => {
     <div className="bg-gray-900 text-white min-h-screen">
       <Navbar />
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-4">
-      <div className="bg-gray-800 p-8 shadow-2xl w-full max-w-4xl backdrop-blur-md bg-opacity-80 animate-fadeIn flex flex-col md:flex-row">
+      <div className="bg-gray-800 p-4 shadow-2xl w-full max-w-4xl backdrop-blur-md bg-opacity-80 animate-fadeIn flex flex-col md:flex-row">
         {/* Left Section - Login Form */}
-        <div className="w-full md:w-1/2 p-6">
+        <div className="w-full md:w-1/2 md:p-6">
           <h2 className="text-3xl font-bold mb-4 text-[#FFE31A] text-center md:text-left">Welcome Back!</h2>
           <p className="text-sm text-gray-300 mb-6 text-center md:text-left">Login to explore amazing deals and offers!</p>
           {error && <p className="text-red-500 mb-4 text-center md:text-left">{error}</p>}
