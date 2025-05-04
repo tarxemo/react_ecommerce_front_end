@@ -14,7 +14,8 @@ import {
   FaSearch,
   FaHome,
   FaShoppingBag,
-  FaList
+  FaList,
+  FaUserPlus
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/useAuth";
