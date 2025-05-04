@@ -162,15 +162,14 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
+      
       {/* Navbar */}
       <nav className={`bg-gray-900 text-white py-4 sticky top-0 z-50 transition-all duration-300 ${isSticky ? "shadow-lg" : ""}`}>
         <div className="container mx-auto flex justify-between items-center px-4">
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-[#FFE31A]">
-            EcommerceApp
+          <Link to="/" className="flex items-center">
+            <img src="/images/logo.jpeg" alt="EcommerceApp Logo" className="h-10 w-auto" />
           </Link>
-
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-8 items-center">
             <Link to="/" className="hover:text-[#FFE31A] transition-colors">

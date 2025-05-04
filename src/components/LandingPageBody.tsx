@@ -21,7 +21,7 @@ const LandingPageBody = () => {
           animate={{ y: [0, -20, 0] }}
           transition={{ duration: 4, repeat: Infinity, delay: 2 }}
         />
-
+        
         <div className="container z-10 mx-auto text-center">
           <motion.h2
             initial={{ opacity: 0, y: -50 }}
