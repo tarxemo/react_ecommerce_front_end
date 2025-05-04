@@ -312,7 +312,7 @@ const handleBuyNow = async () => {
   return (
     <div>
       <Navbar />
-      <div className="bg-gray-900 text-white min-h-screen p-6">
+      <div className="bg-gray-900 text-white min-h-screen p-4 md:p-8">
         {/* Back Button */}
         <Link
           to="/products"
@@ -325,7 +325,7 @@ const handleBuyNow = async () => {
         {/* Product Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Product Image */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <div className="bg-gray-800 p-2 rounded-lg shadow-lg">
           <div className="relative">
             {/* Product Image with Floating Wishlist Button */}
             <img
