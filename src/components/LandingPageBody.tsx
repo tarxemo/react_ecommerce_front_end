@@ -47,7 +47,7 @@ const LandingPageBody = () => {
                 />
                 <h3 className="text-xl font-semibold mb-2">Product {item}</h3>
                 <p className="text-gray-400 mb-4">$29.99</p>
-                <Button href={`/products/${item}`} className="bg-[#FFE31A] z-50 text-gray-900 hover:bg-[#FFE31A]/90">
+                <Button href={`/productss/${item}`} className="bg-[#FFE31A] z-50 text-gray-900 hover:bg-[#FFE31A]/90">
                   View Details
                 </Button>
               </motion.div>
