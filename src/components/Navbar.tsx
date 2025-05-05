@@ -168,7 +168,7 @@ const Navbar = () => {
         <div className="container mx-auto flex justify-between items-center px-4">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src="/images/logo.jpeg" alt="EcommerceApp Logo" className="h-10 w-auto" />
+            <img src="/images/logo.png" alt="EcommerceApp Logo" className="h-10 w-auto" />
           </Link>
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-8 items-center">
